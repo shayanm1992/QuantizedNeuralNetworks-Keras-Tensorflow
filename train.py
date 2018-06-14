@@ -4,35 +4,39 @@ from keras.losses import squared_hinge
 import os
 import argparse
 import keras.backend as K
-
+import numpy as np
 from models.model_factory import build_model
 from utils.config_utils import Config
 from utils.load_data import load_dataset
 
 # parse arguments
-parser = argparse.ArgumentParser(description='Model training')
-parser.add_argument('-c', '--config_path', type=str,
-                default=None, help='Configuration file')
-parser.add_argument('-o' ,'--override',action='store',nargs='*',default=[])
-
-arguments = parser.parse_args()
+#parser = argparse.ArgumentParser(description='Model training')
+#parser.add_argument('-c', '--config_path', type=str,
+#                default=None, help='Configuration file')
+#parser.add_argument('-o' ,'--override',action='store',nargs='*',default=[])
+#
+#arguments = parser.parse_args()
 override_dir = {}
+#arguments.override=
+#for s in arguments.override:
+#    s_s = s.split("=")
+#    k = s_s[0].strip()
+#    v = "=".join(s_s[1:]).strip()
+#    override_dir[k]=v
+#arguments.override = override_dir
+override_dir['lr']=0.01
+override_dir['wbits']=4
+override_dir['abits']=4
+override_dir['network_type']='full-qnn'
 
-for s in arguments.override:
-    s_s = s.split("=")
-    k = s_s[0].strip()
-    v = "=".join(s_s[1:]).strip()
-    override_dir[k]=v
-arguments.override = override_dir
-
-
-cfg = arguments.config_path
-cf = Config(cfg, cmd_args = arguments.override)
+#config_oath
+cfg = "config_CIFAR-10"
+cf = Config(cfg, cmd_args = override_dir)
 
 
 # if necessary, only use the CPU for debugging
-if cf.cpu:
-    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+#if cf.cpu:
+#    os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 
 # ## Construct the network
@@ -52,6 +56,9 @@ tensorboard = TensorBoard(log_dir='./logs/' + str(cf.tensorboard_name), histogra
 print('loading data\n')
 
 train_data, val_data, test_data = load_dataset(cf.dataset)
+train_data['y']=np.squeeze(train_data['y'])
+test_data['y']=np.squeeze(test_data['y'])
+val_data['y']=np.squeeze(val_data['y'])
 
 # learning rate schedule
 def scheduler(epoch):
@@ -59,7 +66,7 @@ def scheduler(epoch):
         index = cf.decay_at_epoch.index(epoch)
         factor = cf.factor_at_epoch[index]
         lr = K.get_value(model.optimizer.lr)
-        IT = train_data.X.shape[0]/cf.batch_size
+        IT = train_data['X'].shape[0]/cf.batch_size
         current_lr = lr * (1./(1.+cf.decay*epoch*IT))
         K.set_value(model.optimizer.lr,current_lr*factor)
         print('\nEpoch {} updates LR: LR = LR * {} = {}\n'.format(epoch+1,factor, K.get_value(model.optimizer.lr)))
@@ -81,12 +88,12 @@ else:
     print('No weights preloaded, training from scratch\n')
 
 print('(re)training the network\n')
-model.fit(train_data.X,train_data.y,
+model.fit(train_data['X'],train_data['y'],
             batch_size = cf.batch_size,
             epochs = cf.epochs,
             verbose = cf.progress_logging,
             callbacks = [checkpoint, tensorboard,lr_decay],
-            validation_data = (val_data.X,val_data.y))
+            validation_data = (val_data['X'],val_data['y']))
 
 
 print('Done\n')
