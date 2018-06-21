@@ -18,42 +18,57 @@
 # along with QNN.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
-from pylearn2.datasets.cifar10 import CIFAR10
-from pylearn2.datasets.mnist import MNIST
-
+#modified by Shayan
+#from pylearn2.datasets.cifar10 import CIFAR10
+#from pylearn2.datasets.mnist import MNIST
+import keras
+from keras.datasets import cifar10
 
 def load_dataset(dataset):
     if (dataset == "CIFAR-10"):
 
         print('Loading CIFAR-10 dataset...')
-
+	train_set_init,test_set_init=cifar10.load_data()
+	train_set={}
+	train_set['X']=train_set_init[0]
+	train_set['y']=train_set_init[1]
+	test_set={}
+	test_set['X']=test_set_init[0]
+	test_set['y']=test_set_init[1]
         train_set_size = 45000
-        train_set = CIFAR10(which_set="train", start=0, stop=train_set_size)
-        valid_set = CIFAR10(which_set="train", start=train_set_size, stop=50000)
-        test_set = CIFAR10(which_set="test")
-
-        train_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set.X), 1.), (-1, 3, 32, 32)),(0,2,3,1))
-        valid_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set.X), 1.), (-1, 3, 32, 32)),(0,2,3,1))
-        test_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set.X), 1.), (-1, 3, 32, 32)),(0,2,3,1))
+        #train_set = CIFAR10(which_set="train", start=0, stop=train_set_size)
+        #valid_set = CIFAR10(which_set="train", start=train_set_size, stop=50000)
+        #test_set = CIFAR10(which_set="test")
+	valid_set={}
+	temp=train_set['X']
+	valid_set['X']=temp[45000:50000]
+	train_set['X']=temp[0:45000]
+	temp=train_set['y']
+	valid_set['y']=temp[45000:50000]
+	train_set['y']=temp[0:45000]
+	#train_set['y']=temp[0:50000]
+        #train_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
+        #valid_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
+        test_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
         # flatten targets
-        train_set.y = np.hstack(train_set.y)
-        valid_set.y = np.hstack(valid_set.y)
-        test_set.y = np.hstack(test_set.y)
+        #train_set['y'] = np.hstack(train_set['y'])
+        #valid_set['y'] = np.hstack(valid_set['y'])
+        #test_set['y'] = np.hstack(test_set['y'])
 
         # Onehot the targets
-        train_set.y = np.float32(np.eye(10)[train_set.y])
-        valid_set.y = np.float32(np.eye(10)[valid_set.y])
-        test_set.y = np.float32(np.eye(10)[test_set.y])
+        train_set['y'] = np.float32(np.eye(10)[train_set['y']])
+        valid_set['y'] = np.float32(np.eye(10)[valid_set['y']])
+        test_set['y'] = np.float32(np.eye(10)[test_set['y']])
 
         # for hinge loss
-        train_set.y = 2 * train_set.y - 1.
-        valid_set.y = 2 * valid_set.y - 1.
-        test_set.y = 2 * test_set.y - 1.
+        train_set['y'] = 2 * train_set['y'] - 1.
+        valid_set['y'] = 2 * valid_set['y'] - 1.
+        test_set['y'] = 2 * test_set['y'] - 1.
         # enlarge train data set by mirrroring
-        x_train_flip = train_set.X[:, :, ::-1, :]
-        y_train_flip = train_set.y
-        train_set.X = np.concatenate((train_set.X, x_train_flip), axis=0)
-        train_set.y = np.concatenate((train_set.y, y_train_flip), axis=0)
+        x_train_flip = train_set['X'][:, :, ::-1, :]
+        y_train_flip = train_set['y']
+        train_set['X'] = np.concatenate((train_set['X'], x_train_flip), axis=0)
+        train_set['y'] = np.concatenate((train_set['y'], y_train_flip), axis=0)
 
     elif (dataset == "MNIST"):
 
@@ -64,29 +79,28 @@ def load_dataset(dataset):
         valid_set = MNIST(which_set="train", start=train_set_size, stop=60000)
         test_set = MNIST(which_set="test")
 
-        train_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set.X), 1.), (-1, 1, 28, 28)),(0,2,3,1))
-        valid_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set.X), 1.), (-1, 1,  28, 28)),(0,2,3,1))
-        test_set.X = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set.X), 1.), (-1, 1,  28, 28)),(0,2,3,1))
+        train_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set['X']), 1.), (-1, 1, 28, 28)),(0,2,3,1))
+        valid_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set['X']), 1.), (-1, 1,  28, 28)),(0,2,3,1))
+        test_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set['X']), 1.), (-1, 1,  28, 28)),(0,2,3,1))
         # flatten targets
-        train_set.y = np.hstack(train_set.y)
-        valid_set.y = np.hstack(valid_set.y)
-        test_set.y = np.hstack(test_set.y)
+        #train_set['y'] = np.hstack(train_set['y'])
+        #valid_set['y'] = np.hstack(valid_set['y'])
+        #test_set['y'] = np.hstack(test_set['y'])
 
         # Onehot the targets
-        train_set.y = np.float32(np.eye(10)[train_set.y])
-        valid_set.y = np.float32(np.eye(10)[valid_set.y])
-        test_set.y = np.float32(np.eye(10)[test_set.y])
+        train_set['y'] = np.float32(np.eye(10)[train_set['y']])
+        valid_set['y'] = np.float32(np.eye(10)[valid_set['y']])
+        test_set['y'] = np.float32(np.eye(10)[test_set['y']])
 
         # for hinge loss
-        train_set.y = 2 * train_set.y - 1.
-        valid_set.y = 2 * valid_set.y - 1.
-        test_set.y = 2 * test_set.y - 1.
+        train_set['y'] = 2 * train_set['y'] - 1.
+        valid_set['y'] = 2 * valid_set['y'] - 1.
+        test_set['y'] = 2 * test_set['y'] - 1.
         # enlarge train data set by mirrroring
-        x_train_flip = train_set.X[:, :, ::-1, :]
-        y_train_flip = train_set.y
-        train_set.X = np.concatenate((train_set.X, x_train_flip), axis=0)
-        train_set.y = np.concatenate((train_set.y, y_train_flip), axis=0)
-
+        x_train_flip = train_set['X'][:, :, ::-1, :]
+        y_train_flip = train_set['y']
+        train_set['X'] = np.concatenate((train_set['X'], x_train_flip), axis=0)
+        train_set['y'] = np.concatenate((train_set['y'], y_train_flip), axis=0)
 
 
 
