@@ -7,6 +7,7 @@ network_type = 'full-qnn'
 bits=None
 wbits = 4
 abits = 4
+
 # finetune an be false or true
 finetune = False
 
@@ -21,15 +22,15 @@ activity_regularizer=0.
 
 # width and depth
 nla=1
-nfa=64
+nfa=32
 nlb=1
-nfb=64
+nfb=32
 nlc=1
 nfc=64
 
 #learning rate decay, factor => LR *= factor
 decay_at_epoch = [0, 25, 80 ]
-factor_at_epoch = [1, .1, 1]
+factor_at_epoch = [1, 1, 1]
 kernel_lr_multiplier = 10
 
 # debug and logging

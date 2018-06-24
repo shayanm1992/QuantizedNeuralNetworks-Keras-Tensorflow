@@ -74,7 +74,6 @@ def build_model(cf):
         model.add(Conv(3, cf.nfa))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
-    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # block B
     for i in range(0,cf.nlb):
@@ -88,9 +87,28 @@ def build_model(cf):
         model.add(Conv(3, cf.nfc))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
+    
+    
+    # block D
+    for i in range(0,1):
+        model.add(Conv(3, 64))
+        model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
+        model.add(Act())
     model.add(MaxPooling2D(pool_size=(2, 2)))
-
-
+    
+    # block E
+    for i in range(0,cf.nlc):
+        model.add(Conv(3, 128))
+        model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
+        model.add(Act())
+    
+    # block F
+    for i in range(0,cf.nlc):
+        model.add(Conv(3, 128))
+        model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
+        model.add(Act())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    
     # Dense Layer
     model.add(Flatten())
     model.add(Dense(cf.classes,use_bias=False))
