@@ -28,25 +28,25 @@ def load_dataset(dataset):
     if (dataset == "CIFAR-10"):
 
         print('Loading CIFAR-10 dataset...')
-	train_set_init,test_set_init=cifar10.load_data()
-	train_set={}
-	train_set['X']=train_set_init[0]
-	train_set['y']=train_set_init[1]
-	test_set={}
-	test_set['X']=test_set_init[0]
-	test_set['y']=test_set_init[1]
+        train_set_init,test_set_init=cifar10.load_data()
+        train_set={}
+        train_set['X']=train_set_init[0]
+        train_set['y']=train_set_init[1]
+        test_set={}
+        test_set['X']=test_set_init[0]
+        test_set['y']=test_set_init[1]
         train_set_size = 45000
         #train_set = CIFAR10(which_set="train", start=0, stop=train_set_size)
         #valid_set = CIFAR10(which_set="train", start=train_set_size, stop=50000)
         #test_set = CIFAR10(which_set="test")
-	valid_set={}
-	temp=train_set['X']
-	valid_set['X']=temp[45000:50000]
-	train_set['X']=temp[0:45000]
-	temp=train_set['y']
-	valid_set['y']=temp[45000:50000]
-	train_set['y']=temp[0:45000]
-	#train_set['y']=temp[0:50000]
+        valid_set={}
+        temp=train_set['X']
+        valid_set['X']=temp[45000:50000]
+        train_set['X']=temp[0:45000]
+        temp=train_set['y']
+        valid_set['y']=temp[45000:50000]
+        train_set['y']=temp[0:45000]
+        #train_set['y']=temp[0:50000]
         #train_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
         #valid_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
         test_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))

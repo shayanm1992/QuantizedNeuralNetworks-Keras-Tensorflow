@@ -6,9 +6,11 @@ from keras import backend as K
 from keras.layers import InputSpec, Layer, Dense, Conv2D
 from keras import constraints
 from keras import initializers
-
-from quantized_ops import quantize, clip_through
-
+import sys
+if sys.version_info[0]>2:
+	from layers.quantized_ops import quantize, clip_through
+else:
+	from quantized_ops import quantize, clip_through
 
 class Clip(constraints.Constraint):
     def __init__(self, min_value, max_value=None):

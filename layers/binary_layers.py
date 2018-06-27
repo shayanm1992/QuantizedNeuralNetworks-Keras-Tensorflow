@@ -6,10 +6,11 @@ from keras import backend as K
 from keras.layers import InputSpec, Layer, Dense, Conv2D
 from keras import constraints
 from keras import initializers
-
-from binary_ops import binarize
-
-
+import sys 
+if sys.version_info[0]<3:
+	from binary_ops import binarize
+else:
+	from layers.binary_ops import binarize
 class Clip(constraints.Constraint):
     def __init__(self, min_value, max_value=None):
         self.min_value = min_value
