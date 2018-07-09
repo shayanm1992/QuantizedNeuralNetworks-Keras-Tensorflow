@@ -5,8 +5,9 @@ cpu = False
 network_type = 'full-qnn'
 # bits can be None, 2, 4, 8 , whatever
 bits=None
-wbits = 16
-abits = 16
+wbits = 4
+abits = 4
+
 # finetune an be false or true
 finetune = False
 
@@ -28,13 +29,13 @@ nlc=1
 nfc=64
 
 #learning rate decay, factor => LR *= factor
-decay_at_epoch = [0, 25, 80 ]
-factor_at_epoch = [1, 1, 1]
+decay_at_epoch = [0, 75, 100 ]
+factor_at_epoch = [1, 0.5, 0.6]
 kernel_lr_multiplier = 10
 
 # debug and logging
 progress_logging = 1 # can be 0 = no std logging, 1 = progress bar logging, 2 = one log line per epoch
-epochs = 10
+epochs = 125
 batch_size = 64
 lr = 0.001
 decay = 0.000025
@@ -42,4 +43,5 @@ decay = 0.000025
 
 # important paths
 out_wght_path = './weights/{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,nla,nfa,nlb,nfb,nlc,nfc)
+
 tensorboard_name = '{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,nla,nfa,nlb,nfb,nlc,nfc)
