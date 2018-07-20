@@ -10,6 +10,8 @@ from models.model_factory import build_model
 from utils.config_utils import Config
 from utils.load_data import load_dataset
 from keras.preprocessing.image import ImageDataGenerator
+from keras import losses
+
 # parse arguments
 #parser = argparse.ArgumentParser(description='Model training')
 #parser.add_argument('-c', '--config_path', type=str,
@@ -28,8 +30,8 @@ override_dir = {}
 #override_dir['lr']=0.01##########
 #override_dir['wbits']=4
 #override_dir['abits']=4
-override_dir['network_type']='full-qnn'
-#
+#override_dir['network_type']='full-bnn'
+#override_dir['finetune']=True
 override_dir['network_type']='float'
 
 #config_path
@@ -82,8 +84,9 @@ lr_decay = LearningRateScheduler(scheduler)
 adam= Adam(lr=cf.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=cf.decay)
 
 print('compiling the network\n')
-model.compile(loss=squared_hinge, optimizer=adam, metrics=['accuracy'])
 
+#model.compile(loss=squared_hinge, optimizer=adam, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy',optimizer='RMSprop',metrics=['accuracy'])
 if cf.finetune:
     print('Load previous weights\n')
     model.load_weights(cf.out_wght_path)
@@ -91,7 +94,7 @@ else:
     print('No weights preloaded, training from scratch\n')
 
 
-"""
+'''
 #data augmentation
 datagen = ImageDataGenerator(
     rotation_range=15,
@@ -100,19 +103,29 @@ datagen = ImageDataGenerator(
     horizontal_flip=True,
     )
 datagen.fit(train_data['X'])
-opt_rms = keras.optimizers.rmsprop(lr=0.001,decay=1e-6)
-model.compile(loss='categorical_crossentropy', optimizer=opt_rms, metrics=['accuracy'])
-model.fit_generator(datagen.flow(train_data['X'], train_data['X'], batch_size=cf.batch_size),verbose=1,validation_data=(val_data['X'],val_data['y']),callbacks=[checkpoint, tensorboard,lr_decay])
+#opt_rms = keras.optimizers.rmsprop(lr=0.001,decay=1e-6)
+#model.compile(loss='categorical_crossentropy', optimizer=opt_rms, metrics=['accuracy'])
+model.fit_generator(datagen.flow(train_data['X'], train_data['X'], batch_size=cf.batch_size),verbose=1,
+                    validation_data=(val_data['X'],val_data['y']),callbacks=[checkpoint, tensorboard,lr_decay])
+'''
 print('(re)training the network\n')
-"""
+
 
 model.fit(train_data['X'],train_data['y'],
             batch_size = cf.batch_size,
             epochs = cf.epochs,
             verbose = cf.progress_logging,
             callbacks = [checkpoint, tensorboard,lr_decay],
-            validation_data = (val_data['X'],val_data['y']))
+            validation_data = (val_data['X'],val_data['y']),
+            shuffle=True)
 
+
+#evaluate model
+
+score,acc=model.evaluate(test_data['X'],test_data['y'])
+
+print('Test score:', score)
+print('Test accuracy:', acc)
 
 print('Done\n')
 

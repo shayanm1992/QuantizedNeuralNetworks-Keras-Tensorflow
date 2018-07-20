@@ -55,6 +55,9 @@ def load_dataset(dataset):
         #valid_set['y'] = np.hstack(valid_set['y'])
         #test_set['y'] = np.hstack(test_set['y'])
 
+
+        #modified to categorical and cross-entropy loss
+        '''
         # Onehot the targets
         train_set['y'] = np.float32(np.eye(10)[train_set['y']])
         valid_set['y'] = np.float32(np.eye(10)[valid_set['y']])
@@ -69,7 +72,15 @@ def load_dataset(dataset):
         y_train_flip = train_set['y']
         train_set['X'] = np.concatenate((train_set['X'], x_train_flip), axis=0)
         train_set['y'] = np.concatenate((train_set['y'], y_train_flip), axis=0)
-
+        '''
+        # enlarge train data set by mirrroring
+        x_train_flip = train_set['X'][:, :, ::-1, :]
+        y_train_flip = train_set['y']
+        train_set['X'] = np.concatenate((train_set['X'], x_train_flip), axis=0)
+        train_set['y'] = np.concatenate((train_set['y'], y_train_flip), axis=0)
+        train_set['y']=keras.utils.to_categorical(train_set['y'])
+        test_set['y']=keras.utils.to_categorical(test_set['y'])
+        valid_set['y']=keras.utils.to_categorical(valid_set['y'])
     elif (dataset == "MNIST"):
 
         print('Loading MNIST dataset...')

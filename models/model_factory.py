@@ -115,6 +115,8 @@ def build_model(cf):
     model.add(BatchNormalization(momentum=0.1,epsilon=0.0001))
 
     # In[5]:
+    #added for categorical-crossentropy
+    model.add(Activation('softmax'))
     model.summary()
 
     return model
