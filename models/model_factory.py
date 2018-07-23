@@ -26,6 +26,7 @@ def build_model(cf):
                                    kernel_regularizer=l2(cf.kernel_regularizer))
         Act = lambda: LeakyReLU()
     elif cf.network_type=='qnn':
+        #added by shayan for different word lengths in different layerss
         Conv_ = lambda s, f, i, c: QuantizedConv2D(kernel_size=(s, s), H=1, nb=cf.wbits, filters=f, strides=(1, 1),
                                             padding='same', activation='linear',
                                             kernel_regularizer=l2(cf.kernel_regularizer),
@@ -36,11 +37,11 @@ def build_model(cf):
                                             kernel_lr_multiplier=cf.kernel_lr_multiplier)
         Act = lambda: LeakyReLU()
     elif cf.network_type=='full-qnn':
-        Conv_ = lambda s, f, i,c: QuantizedConv2D(kernel_size=(s, s), H=1, nb=cf.wbits, filters=f, strides=(1, 1),
+        Conv_ = lambda s, f, i,c,nb: QuantizedConv2D(kernel_size=(s, s), H=1, nb=nb, filters=f, strides=(1, 1),
                                             padding='same', activation='linear',
                                             kernel_regularizer=l2(cf.kernel_regularizer),
                                             kernel_lr_multiplier=cf.kernel_lr_multiplier,input_shape = (i,i,c))
-        Conv = lambda s, f: QuantizedConv2D(kernel_size=(s, s), H=1, nb=cf.wbits, filters=f, strides=(1, 1),
+        Conv = lambda s, f,nb: QuantizedConv2D(kernel_size=(s, s), H=1, nb=nb, filters=f, strides=(1, 1),
                                             padding='same', activation='linear',
                                             kernel_regularizer=l2(cf.kernel_regularizer),
                                             kernel_lr_multiplier=cf.kernel_lr_multiplier)
@@ -66,45 +67,45 @@ def build_model(cf):
 
 
     model = Sequential()
-    model.add(Conv_(3, cf.nfa,cf.dim,cf.channels))
+    model.add(Conv_(3, cf.nfa,cf.dim,cf.channels,cf.wbits))
     model.add(BatchNormalization(momentum=0.1,epsilon=0.0001))
     model.add(Act())
     # block A
     for i in range(0,cf.nla-1):
-        model.add(Conv(3, cf.nfa))
+        model.add(Conv(3, cf.nfa,cf.wbits))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
 
     # block B
     for i in range(0,cf.nlb):
-        model.add(Conv(3, cf.nfb))
+        model.add(Conv(3, cf.nfb,cf.wbits))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # block C
     for i in range(0,cf.nlc):
-        model.add(Conv(3, cf.nfc))
+        model.add(Conv(3, cf.nfc,cf.wbits))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
     
     
     # block D
     for i in range(0,1):
-        model.add(Conv(3, 64))
+        model.add(Conv(3, 64,cf.wbits2))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
     model.add(MaxPooling2D(pool_size=(2, 2)))
     
     # block E
     for i in range(0,cf.nlc):
-        model.add(Conv(3, 128))
+        model.add(Conv(3, 128,cf.wbits2))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
     
     # block F
     for i in range(0,cf.nlc):
-        model.add(Conv(3, 128))
+        model.add(Conv(3, 128,cf.wbits2))
         model.add(BatchNormalization(momentum=0.1, epsilon=0.0001))
         model.add(Act())
     model.add(MaxPooling2D(pool_size=(2, 2)))

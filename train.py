@@ -32,7 +32,7 @@ override_dir = {}
 #override_dir['abits']=4
 #override_dir['network_type']='full-bnn'
 #override_dir['finetune']=True
-override_dir['network_type']='float'
+override_dir['network_type']='full-qnn'
 
 #config_path
 cfg = "config_CIFAR-10"

@@ -5,8 +5,9 @@ cpu = False
 network_type = 'full-bnn'
 # bits can be None, 2, 4, 8 , whatever
 bits=None
-wbits = 4
-abits = 4
+wbits = 16
+wbits2 = 8
+abits = 16
 # finetune an be false or true
 finetune = False
 
@@ -41,5 +42,5 @@ decay = 0.000025
 
 
 # important paths
-out_wght_path = './weights/{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,nla,nfa,nlb,nfb,nlc,nfc)
-tensorboard_name = '{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,nla,nfa,nlb,nfb,nlc,nfc)
+out_wght_path = './weights/{}_{}_{}b_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,wbits2,nla,nfa,nlb,nfb,nlc,nfc)
+tensorboard_name = '{}_{}_{}b_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(dataset,network_type,abits,wbits,wbits2,nla,nfa,nlb,nfb,nlc,nfc)

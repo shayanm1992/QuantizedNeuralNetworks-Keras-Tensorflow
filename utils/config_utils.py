@@ -25,6 +25,7 @@ parameter_specs = {
     'activity_regularizer'     :[True, None, float],
     'bits'                    : [False, None, int],
     'wbits'                    :[False, None, int],
+    'wbits2'                    :[False, None, int],
     'abits'                    :[False, None, int],
     'nla'                      :[False, None, int],
     'nfa'                      :[False, None, int],
@@ -85,10 +86,13 @@ class Config:
             if self.wbits is None:
                 self.wbits = self.bits
                 warnings.warn('specialized bits to wbits')
+            if self.wbits2 is None:
+                self.wbits2 = self.bits
+                warnings.warn('specialized bits to wbits')
         del self.bits #to make sure it is not further used
         if hasattr(self, 'class'):
             self.clss=getattr(self,'class')
-        self.out_wght_path = './weights/{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(self.dataset,self.network_type, self.abits, self.wbits, self.nla, self.nfa, self.nlb,
+        self.out_wght_path = './weights/{}_{}_{}b_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(self.dataset,self.network_type, self.abits, self.wbits,self.wbits2, self.nla, self.nfa, self.nlb,
                                                                              self.nfb, self.nlc, self.nfc)
-        self.tensorboard_name = '{}_{}_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(self.dataset,self.network_type, self.abits, self.wbits, self.nla, self.nfa, self.nlb,
+        self.tensorboard_name = '{}_{}_{}b_{}b_{}b_{}_{}_{}_{}_{}_{}.hdf5'.format(self.dataset,self.network_type, self.abits, self.wbits,self.wbits2, self.nla, self.nfa, self.nlb,
                                                                              self.nfb, self.nlc, self.nfc)
