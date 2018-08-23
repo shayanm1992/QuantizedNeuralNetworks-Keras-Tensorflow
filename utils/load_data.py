@@ -49,7 +49,7 @@ def load_dataset(dataset):
 	#train_set['y']=temp[0:50000]
         #train_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., train_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
         #valid_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., valid_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
-        test_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
+        #test_set['X'] = np.transpose(np.reshape(np.subtract(np.multiply(2. / 255., test_set['X']), 1.), (-1, 3, 32, 32)),(0,2,3,1))
         # flatten targets
         #train_set['y'] = np.hstack(train_set['y'])
         #valid_set['y'] = np.hstack(valid_set['y'])

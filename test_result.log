@@ -1,0 +1,18 @@
+DEBUG:root:time is 2018-07-26 22:58:10.504443
+DEBUG:root:wbit 8 wbit2 16 -> accuracy =  90
+
+DEBUG:root:time is 2018-07-26 23:44:33.784357
+DEBUG:root:wbit 16 wbit2 8 -> accuracy =  0.6181
+
+DEBUG:root:time is 2018-07-27 00:25:40.743507
+DEBUG:root:wbit 16 wbit2 4 -> accuracy =  0.6478
+
+DEBUG:root:time is 2018-07-27 01:06:45.487684
+DEBUG:root:wbit 4 wbit2 16 -> accuracy =  0.6917
+
+DEBUG:root:time is 2018-07-27 08:37:45.658933
+DEBUG:root:wbit 8 wbit2 4 -> accuracy =  0.6359
+
+DEBUG:root:time is 2018-07-27 09:19:00.453826
+DEBUG:root:wbit 4 wbit2 8 -> accuracy =  0.6598
+
