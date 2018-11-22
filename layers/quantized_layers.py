@@ -15,7 +15,7 @@ class Clip(constraints.Constraint):
         self.min_value = min_value
         self.max_value = max_value
         if not self.max_value:
-            self.max_value = -self.min_value
+            self.max_value = -self.min_valuecars
         if self.min_value > self.max_value:
             self.min_value, self.max_value = self.max_value, self.min_value
 
